@@ -10,7 +10,11 @@ export default function OpcionesScreen() {
         <TextInput style={styles.input} placeholder="User_Name1" />
 
         <Text style={styles.label}>Cambiar contraseña</Text>
-        <TextInput style={styles.input} secureTextEntry placeholder="Nueva contraseña" />
+        <TextInput 
+          style={styles.input} 
+          secureTextEntry={true} 
+          placeholder="Nueva contraseña" 
+        />
 
         <TouchableOpacity style={styles.btn}>
           <Text style={styles.btnText}>Guardar cambios</Text>

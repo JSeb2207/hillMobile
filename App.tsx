@@ -15,22 +15,22 @@ export default function App() {
       <Tab.Navigator
         screenOptions={({ route }) => ({
           headerShown: false,
-          tabBarIcon: ({ color, size }) => {
-            const icons: Record<string, keyof typeof Ionicons.glyphMap> = {
-              Inicio: "home",
-              Notificaciones: "notifications",
-              Progreso: "bar-chart",
-              Logros: "trophy",
-              Opciones: "settings",
-            };
+          tabBarIcon: ({ color, size, focused }) => {
+            let iconName: keyof typeof Ionicons.glyphMap = "home";
 
-            return (
-              <Ionicons
-                name={icons[route.name]}
-                size={size}
-                color={color}
-              />
-            );
+            if (route.name === "Inicio") {
+              iconName = "home";
+            } else if (route.name === "Notificaciones") {
+              iconName = "notifications";
+            } else if (route.name === "Progreso") {
+              iconName = "bar-chart";
+            } else if (route.name === "Logros") {
+              iconName = "trophy";
+            } else if (route.name === "Opciones") {
+              iconName = "settings";
+            }
+
+            return <Ionicons name={iconName} size={size} color={color} />;
           },
           tabBarActiveTintColor: "#2e7d32",
           tabBarInactiveTintColor: "gray",
@@ -45,4 +45,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
