@@ -1,52 +1,38 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { SafeAreaView, ScrollView, Text, StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <Image
-        source={require("../../assets/hill.png")}
-        style={styles.logo}
-      />
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.title}>¡Bienvenido a NutriFitness! 💪</Text>
 
-      <Text style={styles.title}>Bienvenido a Hill</Text>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Tu resumen de hoy</Text>
+          <Text style={styles.cardDesc}>• 450 kcal quemadas</Text>
+          <Text style={styles.cardDesc}>• 7,300 pasos</Text>
+          <Text style={styles.cardDesc}>• 2 L de agua</Text>
+        </View>
 
-      <TouchableOpacity style={styles.btn}>
-        <Text style={styles.btnText}>Registrarse</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.btn}>
-        <Text style={styles.btnText}>Iniciar sesión</Text>
-      </TouchableOpacity>
-    </View>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Recomendación</Text>
+          <Text style={styles.cardDesc}>Haz 20 min de cardio suave 🏃‍♂️</Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#b6dfac",
-    alignItems: "center",
-    justifyContent: "center",
+  container: { flex: 1, backgroundColor: "#f5f5f5" },
+  content: { padding: 20 },
+  title: { fontSize: 28, fontWeight: "bold", color: "#2e7d32", marginBottom: 20 },
+  card: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 15,
+    elevation: 3,
   },
-  logo: {
-    width: 160,
-    height: 160,
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "600",
-    marginBottom: 20,
-  },
-  btn: {
-    backgroundColor: "#ffffff",
-    padding: 14,
-    width: 220,
-    borderRadius: 10,
-    marginVertical: 10,
-  },
-  btnText: {
-    textAlign: "center",
-    fontWeight: "600",
-  },
+  cardTitle: { fontSize: 18, fontWeight: "bold" },
+  cardDesc: { color: "gray", marginTop: 5 },
 });
