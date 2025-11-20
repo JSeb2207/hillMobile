@@ -2,6 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import { AppProvider, useApp } from "./src/context/AppContext";
 
 // Screens
 import LoginScreen from "./src/screens/LoginScreen";
@@ -26,11 +27,20 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
 function Tabs() {
+  const { settings } = useApp(); // ✅ AHORA SÍ PUEDE LEER EL CONTEXT
+  const isDark = settings.darkMode;
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: { height: 60, paddingBottom: 10 },
+        tabBarStyle: { 
+          height: 60, 
+          paddingBottom: 10,
+          borderTopWidth: 1,
+          backgroundColor: isDark ? '#2a2a2a' : '#fff', // ✅ FONDO DINÁMICO
+          borderTopColor: isDark ? '#3a3a3a' : '#e0e0e0', // ✅ BORDE DINÁMICO
+        },
         tabBarIcon: ({ color, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap = "home";
           
@@ -55,7 +65,7 @@ function Tabs() {
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: "#2e7d32",
-        tabBarInactiveTintColor: "gray",
+        tabBarInactiveTintColor: isDark ? '#666' : 'gray', // ✅ ICONOS DINÁMICOS
       })}
     >
       <Tab.Screen name="Inicio" component={HomeScreen} />
@@ -67,7 +77,8 @@ function Tabs() {
   );
 }
 
-export default function App() {
+// ✅ NUEVO: Wrapper para Navigation que está DENTRO del Context
+function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -78,5 +89,14 @@ export default function App() {
         <Stack.Screen name="Privacidad" component={PrivacidadScreen} />
       </Stack.Navigator>
     </NavigationContainer>
+  );
+}
+
+// ✅ CAMBIO CLAVE: AppProvider ENVUELVE NavigationContainer
+export default function App() {
+  return (
+    <AppProvider>
+      <AppNavigator />
+    </AppProvider>
   );
 }

@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useApp } from '../context/AppContext';
 
 export default function LogrosScreen() {
-  const navigation = useNavigation();
+  const { settings } = useApp();
+  const isDark = settings.darkMode;
 
   const logros = [
     { id: 1, title: 'Primer Paso', description: 'Completa tu primera tarea', icon: 'footsteps', color: '#4CAF50', unlocked: true },
@@ -20,19 +21,25 @@ export default function LogrosScreen() {
   const unlockedCount = logros.filter(l => l.unlocked).length;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5' }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Mis Logros</Text>
-        <Text style={styles.headerSubtitle}>{unlockedCount} de {logros.length} desbloqueados</Text>
+      <View style={[styles.header, { backgroundColor: isDark ? '#2a2a2a' : '#fff' }]}>
+        <Text style={[styles.headerTitle, { color: isDark ? '#fff' : '#333' }]}>
+          Mis Logros
+        </Text>
+        <Text style={[styles.headerSubtitle, { color: isDark ? '#999' : '#666' }]}>
+          {unlockedCount} de {logros.length} desbloqueados
+        </Text>
       </View>
 
       {/* Progress Bar */}
-      <View style={styles.progressContainer}>
-        <View style={styles.progressBar}>
+      <View style={[styles.progressContainer, { backgroundColor: isDark ? '#2a2a2a' : '#fff' }]}>
+        <View style={[styles.progressBar, { backgroundColor: isDark ? '#3a3a3a' : '#e0e0e0' }]}>
           <View style={[styles.progressFill, { width: `${(unlockedCount / logros.length) * 100}%` }]} />
         </View>
-        <Text style={styles.progressText}>{Math.round((unlockedCount / logros.length) * 100)}% Completado</Text>
+        <Text style={[styles.progressText, { color: isDark ? '#999' : '#666' }]}>
+          {Math.round((unlockedCount / logros.length) * 100)}% Completado
+        </Text>
       </View>
 
       {/* Logros Grid */}
@@ -46,29 +53,32 @@ export default function LogrosScreen() {
             key={logro.id}
             style={[
               styles.logroCard,
+              { backgroundColor: isDark ? '#2a2a2a' : '#fff' },
               !logro.unlocked && styles.logroCardLocked
             ]}
             activeOpacity={0.7}
           >
             <View style={[
               styles.iconContainer,
-              { backgroundColor: logro.unlocked ? logro.color : '#e0e0e0' }
+              { backgroundColor: logro.unlocked ? logro.color : (isDark ? '#3a3a3a' : '#e0e0e0') }
             ]}>
               <Ionicons 
                 name={logro.icon as any} 
                 size={32} 
-                color={logro.unlocked ? '#fff' : '#999'} 
+                color={logro.unlocked ? '#fff' : (isDark ? '#666' : '#999')} 
               />
             </View>
             <Text style={[
               styles.logroTitle,
-              !logro.unlocked && styles.logroTitleLocked
+              { color: isDark ? '#fff' : '#333' },
+              !logro.unlocked && { color: isDark ? '#666' : '#999' }
             ]}>
               {logro.title}
             </Text>
             <Text style={[
               styles.logroDescription,
-              !logro.unlocked && styles.logroDescriptionLocked
+              { color: isDark ? '#999' : '#666' },
+              !logro.unlocked && { color: isDark ? '#555' : '#aaa' }
             ]}>
               {logro.description}
             </Text>
@@ -79,7 +89,7 @@ export default function LogrosScreen() {
             )}
             {!logro.unlocked && (
               <View style={styles.lockedOverlay}>
-                <Ionicons name="lock-closed" size={24} color="#999" />
+                <Ionicons name="lock-closed" size={24} color={isDark ? '#666' : '#999'} />
               </View>
             )}
           </TouchableOpacity>
@@ -92,33 +102,27 @@ export default function LogrosScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   header: {
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 20,
-    backgroundColor: '#fff',
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
     marginBottom: 5,
   },
   headerSubtitle: {
     fontSize: 16,
-    color: '#666',
   },
   progressContainer: {
-    backgroundColor: '#fff',
     paddingHorizontal: 20,
     paddingBottom: 20,
     marginBottom: 10,
   },
   progressBar: {
     height: 10,
-    backgroundColor: '#e0e0e0',
     borderRadius: 5,
     overflow: 'hidden',
     marginBottom: 8,
@@ -130,7 +134,6 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 14,
-    color: '#666',
     textAlign: 'center',
   },
   scrollView: {
@@ -140,11 +143,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     padding: 10,
-    paddingBottom: 80, // Espacio extra para el tab bar
+    paddingBottom: 80,
   },
   logroCard: {
     width: '47%',
-    backgroundColor: '#fff',
     borderRadius: 15,
     padding: 15,
     margin: '1.5%',
@@ -170,21 +172,13 @@ const styles = StyleSheet.create({
   logroTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
     textAlign: 'center',
     marginBottom: 6,
   },
-  logroTitleLocked: {
-    color: '#999',
-  },
   logroDescription: {
     fontSize: 12,
-    color: '#666',
     textAlign: 'center',
     lineHeight: 16,
-  },
-  logroDescriptionLocked: {
-    color: '#aaa',
   },
   unlockedBadge: {
     position: 'absolute',

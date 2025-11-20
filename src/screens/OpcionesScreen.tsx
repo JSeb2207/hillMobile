@@ -4,20 +4,33 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../App';
+import { useApp } from '../context/AppContext';
 
 type OpcionesScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function OpcionesScreen() {
   const navigation = useNavigation<OpcionesScreenNavigationProp>();
-  const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
-  const [darkMode, setDarkMode] = React.useState(false);
-  const [soundEnabled, setSoundEnabled] = React.useState(true);
+  const { settings, updateSettings } = useApp();
+  
+  const isDark = settings.darkMode;
+
+  // Estilos dinámicos según el tema
+  const dynamicStyles = {
+    container: { backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5' },
+    header: { backgroundColor: isDark ? '#2a2a2a' : '#fff' },
+    text: { color: isDark ? '#fff' : '#333' },
+    subtext: { color: isDark ? '#999' : '#666' },
+    option: { 
+      backgroundColor: isDark ? '#2a2a2a' : '#fff',
+      borderBottomColor: isDark ? '#3a3a3a' : '#f0f0f0'
+    },
+  };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, dynamicStyles.container]}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Configuración</Text>
+      <View style={[styles.header, dynamicStyles.header]}>
+        <Text style={[styles.headerTitle, dynamicStyles.text]}>Configuración</Text>
       </View>
 
       <ScrollView 
@@ -30,31 +43,31 @@ export default function OpcionesScreen() {
           <Text style={styles.sectionTitle}>CUENTA</Text>
           
           <TouchableOpacity 
-            style={styles.option}
+            style={[styles.option, dynamicStyles.option]}
             onPress={() => navigation.navigate('Perfil')}
           >
             <View style={[styles.iconBox, { backgroundColor: '#E3F2FD' }]}>
               <Ionicons name="person" size={24} color="#2196F3" />
             </View>
             <View style={styles.optionContent}>
-              <Text style={styles.optionTitle}>Editar Perfil</Text>
-              <Text style={styles.optionSubtitle}>Nombre, foto y más</Text>
+              <Text style={[styles.optionTitle, dynamicStyles.text]}>Editar Perfil</Text>
+              <Text style={[styles.optionSubtitle, dynamicStyles.subtext]}>Nombre, foto y más</Text>
             </View>
-            <Ionicons name="chevron-forward" size={24} color="#999" />
+            <Ionicons name="chevron-forward" size={24} color={isDark ? '#666' : '#999'} />
           </TouchableOpacity>
 
           <TouchableOpacity 
-            style={styles.option}
+            style={[styles.option, dynamicStyles.option]}
             onPress={() => navigation.navigate('Privacidad')}
           >
             <View style={[styles.iconBox, { backgroundColor: '#F3E5F5' }]}>
               <Ionicons name="shield-checkmark" size={24} color="#9C27B0" />
             </View>
             <View style={styles.optionContent}>
-              <Text style={styles.optionTitle}>Privacidad y Seguridad</Text>
-              <Text style={styles.optionSubtitle}>Contraseña, datos</Text>
+              <Text style={[styles.optionTitle, dynamicStyles.text]}>Privacidad y Seguridad</Text>
+              <Text style={[styles.optionSubtitle, dynamicStyles.subtext]}>Contraseña, datos</Text>
             </View>
-            <Ionicons name="chevron-forward" size={24} color="#999" />
+            <Ionicons name="chevron-forward" size={24} color={isDark ? '#666' : '#999'} />
           </TouchableOpacity>
         </View>
 
@@ -62,63 +75,63 @@ export default function OpcionesScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>PREFERENCIAS</Text>
           
-          <View style={styles.option}>
+          <View style={[styles.option, dynamicStyles.option]}>
             <View style={[styles.iconBox, { backgroundColor: '#FFF3E0' }]}>
               <Ionicons name="notifications" size={24} color="#FF9800" />
             </View>
             <View style={styles.optionContent}>
-              <Text style={styles.optionTitle}>Notificaciones</Text>
-              <Text style={styles.optionSubtitle}>Alertas y recordatorios</Text>
+              <Text style={[styles.optionTitle, dynamicStyles.text]}>Notificaciones</Text>
+              <Text style={[styles.optionSubtitle, dynamicStyles.subtext]}>Alertas y recordatorios</Text>
             </View>
             <Switch
-              value={notificationsEnabled}
-              onValueChange={setNotificationsEnabled}
+              value={settings.notificationsEnabled}
+              onValueChange={(value) => updateSettings({ notificationsEnabled: value })}
               trackColor={{ false: '#e0e0e0', true: '#81C784' }}
-              thumbColor={notificationsEnabled ? '#2e7d32' : '#f4f3f4'}
+              thumbColor={settings.notificationsEnabled ? '#2e7d32' : '#f4f3f4'}
             />
           </View>
 
-          <View style={styles.option}>
+          <View style={[styles.option, dynamicStyles.option]}>
             <View style={[styles.iconBox, { backgroundColor: '#E8F5E9' }]}>
               <Ionicons name="volume-high" size={24} color="#4CAF50" />
             </View>
             <View style={styles.optionContent}>
-              <Text style={styles.optionTitle}>Sonidos</Text>
-              <Text style={styles.optionSubtitle}>Efectos de sonido</Text>
+              <Text style={[styles.optionTitle, dynamicStyles.text]}>Sonidos</Text>
+              <Text style={[styles.optionSubtitle, dynamicStyles.subtext]}>Efectos de sonido</Text>
             </View>
             <Switch
-              value={soundEnabled}
-              onValueChange={setSoundEnabled}
+              value={settings.soundEnabled}
+              onValueChange={(value) => updateSettings({ soundEnabled: value })}
               trackColor={{ false: '#e0e0e0', true: '#81C784' }}
-              thumbColor={soundEnabled ? '#2e7d32' : '#f4f3f4'}
+              thumbColor={settings.soundEnabled ? '#2e7d32' : '#f4f3f4'}
             />
           </View>
 
-          <View style={styles.option}>
-            <View style={[styles.iconBox, { backgroundColor: '#E0E0E0' }]}>
-              <Ionicons name="moon" size={24} color="#616161" />
+          <View style={[styles.option, dynamicStyles.option]}>
+            <View style={[styles.iconBox, { backgroundColor: isDark ? '#424242' : '#E0E0E0' }]}>
+              <Ionicons name={isDark ? "moon" : "sunny"} size={24} color={isDark ? '#FFD700' : '#616161'} />
             </View>
             <View style={styles.optionContent}>
-              <Text style={styles.optionTitle}>Modo Oscuro</Text>
-              <Text style={styles.optionSubtitle}>Tema de la aplicación</Text>
+              <Text style={[styles.optionTitle, dynamicStyles.text]}>Modo Oscuro</Text>
+              <Text style={[styles.optionSubtitle, dynamicStyles.subtext]}>Tema de la aplicación</Text>
             </View>
             <Switch
-              value={darkMode}
-              onValueChange={setDarkMode}
+              value={settings.darkMode}
+              onValueChange={(value) => updateSettings({ darkMode: value })}
               trackColor={{ false: '#e0e0e0', true: '#81C784' }}
-              thumbColor={darkMode ? '#2e7d32' : '#f4f3f4'}
+              thumbColor={settings.darkMode ? '#2e7d32' : '#f4f3f4'}
             />
           </View>
 
-          <TouchableOpacity style={styles.option}>
+          <TouchableOpacity style={[styles.option, dynamicStyles.option]}>
             <View style={[styles.iconBox, { backgroundColor: '#E1F5FE' }]}>
               <Ionicons name="language" size={24} color="#03A9F4" />
             </View>
             <View style={styles.optionContent}>
-              <Text style={styles.optionTitle}>Idioma</Text>
-              <Text style={styles.optionSubtitle}>Español</Text>
+              <Text style={[styles.optionTitle, dynamicStyles.text]}>Idioma</Text>
+              <Text style={[styles.optionSubtitle, dynamicStyles.subtext]}>Español</Text>
             </View>
-            <Ionicons name="chevron-forward" size={24} color="#999" />
+            <Ionicons name="chevron-forward" size={24} color={isDark ? '#666' : '#999'} />
           </TouchableOpacity>
         </View>
 
@@ -126,37 +139,37 @@ export default function OpcionesScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>MÁS</Text>
           
-          <TouchableOpacity style={styles.option}>
+          <TouchableOpacity style={[styles.option, dynamicStyles.option]}>
             <View style={[styles.iconBox, { backgroundColor: '#FFF9C4' }]}>
               <Ionicons name="help-circle" size={24} color="#FBC02D" />
             </View>
             <View style={styles.optionContent}>
-              <Text style={styles.optionTitle}>Ayuda y Soporte</Text>
-              <Text style={styles.optionSubtitle}>Centro de ayuda</Text>
+              <Text style={[styles.optionTitle, dynamicStyles.text]}>Ayuda y Soporte</Text>
+              <Text style={[styles.optionSubtitle, dynamicStyles.subtext]}>Centro de ayuda</Text>
             </View>
-            <Ionicons name="chevron-forward" size={24} color="#999" />
+            <Ionicons name="chevron-forward" size={24} color={isDark ? '#666' : '#999'} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.option}>
+          <TouchableOpacity style={[styles.option, dynamicStyles.option]}>
             <View style={[styles.iconBox, { backgroundColor: '#E8EAF6' }]}>
               <Ionicons name="information-circle" size={24} color="#3F51B5" />
             </View>
             <View style={styles.optionContent}>
-              <Text style={styles.optionTitle}>Acerca de</Text>
-              <Text style={styles.optionSubtitle}>Versión 1.0.0</Text>
+              <Text style={[styles.optionTitle, dynamicStyles.text]}>Acerca de</Text>
+              <Text style={[styles.optionSubtitle, dynamicStyles.subtext]}>Versión 1.0.0</Text>
             </View>
-            <Ionicons name="chevron-forward" size={24} color="#999" />
+            <Ionicons name="chevron-forward" size={24} color={isDark ? '#666' : '#999'} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.option}>
+          <TouchableOpacity style={[styles.option, dynamicStyles.option]}>
             <View style={[styles.iconBox, { backgroundColor: '#FCE4EC' }]}>
               <Ionicons name="star" size={24} color="#E91E63" />
             </View>
             <View style={styles.optionContent}>
-              <Text style={styles.optionTitle}>Calificar App</Text>
-              <Text style={styles.optionSubtitle}>Déjanos tu opinión</Text>
+              <Text style={[styles.optionTitle, dynamicStyles.text]}>Calificar App</Text>
+              <Text style={[styles.optionSubtitle, dynamicStyles.subtext]}>Déjanos tu opinión</Text>
             </View>
-            <Ionicons name="chevron-forward" size={24} color="#999" />
+            <Ionicons name="chevron-forward" size={24} color={isDark ? '#666' : '#999'} />
           </TouchableOpacity>
         </View>
 
@@ -178,18 +191,15 @@ export default function OpcionesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   header: {
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 20,
-    backgroundColor: '#fff',
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
   },
   scrollView: {
     flex: 1,
@@ -211,11 +221,9 @@ const styles = StyleSheet.create({
   option: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
   },
   iconBox: {
     width: 48,
@@ -231,12 +239,10 @@ const styles = StyleSheet.create({
   optionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
     marginBottom: 3,
   },
   optionSubtitle: {
     fontSize: 13,
-    color: '#999',
   },
   logoutButton: {
     flexDirection: 'row',
